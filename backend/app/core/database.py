@@ -260,7 +260,14 @@ def get_session_factory(
     return _session_factory_instance
 
 
-def get_db(engine: Optional[Engine] = None) -> Generator[Session, None, None]:
+try:
+    from fastapi import Depends
+    _engine_default: Any = Depends(lambda: None)
+except ImportError:  # pragma: no cover
+    _engine_default = None
+
+
+def get_db(engine: Optional[Engine] = _engine_default) -> Generator[Session, None, None]:
     """Database session dependency generator for FastAPI or background workers.
 
     Yields a SQLAlchemy Session and guarantees that the session is closed upon completion.
@@ -271,7 +278,8 @@ def get_db(engine: Optional[Engine] = None) -> Generator[Session, None, None]:
     Yields:
         Active SQLAlchemy Session.
     """
-    factory = get_session_factory(engine=engine)
+    actual_engine = None if hasattr(engine, "dependency") else engine
+    factory = get_session_factory(engine=actual_engine)
     session: Session = factory()
     try:
         yield session

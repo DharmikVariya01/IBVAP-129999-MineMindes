@@ -1,5 +1,25 @@
-"""Pydantic schemas for data serialization and API validation.
+"""Pydantic schemas package for IBVAP REST API.
 
-Request and response schemas for cameras, alerts, tracking, and telemetry
-will be added in their respective implementation modules.
+Exports request and response models for cameras, alerts, tracks, events, evidence, and stats.
 """
+
+from app.schemas.alert import AlertListResponse, AlertResponse, AlertUpdate
+from app.schemas.camera import CameraListResponse, CameraResponse
+from app.schemas.common import PaginatedResponse
+from app.schemas.event import EventResponse
+from app.schemas.evidence import EvidenceResponse
+from app.schemas.stats import StatsResponse
+from app.schemas.track import TrackResponse
+
+__all__ = [
+    "PaginatedResponse",
+    "CameraResponse",
+    "CameraListResponse",
+    "AlertResponse",
+    "AlertListResponse",
+    "AlertUpdate",
+    "TrackResponse",
+    "EventResponse",
+    "EvidenceResponse",
+    "StatsResponse",
+]

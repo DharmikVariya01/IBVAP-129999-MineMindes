@@ -62,6 +62,8 @@ class Settings(BaseModel):
     db_pool_timeout: int = Field(default_factory=lambda: int(os.getenv("DB_POOL_TIMEOUT", "30")))
     db_pool_recycle: int = Field(default_factory=lambda: int(os.getenv("DB_POOL_RECYCLE", "1800")))
     db_echo: bool = Field(default_factory=lambda: os.getenv("DB_ECHO", "false").lower() in ("true", "1", "yes"))
+    # Storage Configuration
+    evidence_dir: str = Field(default_factory=lambda: os.getenv("EVIDENCE_DIR", str(_root_dir / "evidence")))
 
 
 def get_settings() -> Settings:
