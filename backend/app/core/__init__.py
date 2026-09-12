@@ -14,6 +14,8 @@ from app.core.database import (
     mask_database_url,
     validate_and_normalize_database_url,
 )
+from app.core.exceptions import register_exception_handlers
+from app.core.logging import SensitiveDataFilter, logger, setup_logging
 
 __all__ = [
     "settings",
@@ -29,4 +31,8 @@ __all__ = [
     "get_db",
     "check_database_connection",
     "init_db",
+    "register_exception_handlers",
+    "setup_logging",
+    "logger",
+    "SensitiveDataFilter",
 ]

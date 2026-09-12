@@ -13,21 +13,47 @@ load_dotenv(_backend_dir / ".env")
 load_dotenv(_root_dir / ".env")
 
 
-class Settings(BaseModel):
-    """IBVAP platform configuration settings."""
-
-    app_name: str = Field(default_factory=lambda: os.getenv("APP_NAME", "IBVAP Backend API"))
-    version: str = "0.1.0"
-    environment: str = Field(default_factory=lambda: os.getenv("ENVIRONMENT", "development"))
-    debug: bool = Field(default_factory=lambda: os.getenv("DEBUG", "true").lower() in ("true", "1", "yes"))
-    host: str = Field(default_factory=lambda: os.getenv("APP_HOST", "127.0.0.1"))
-    port: int = Field(default_factory=lambda: int(os.getenv("APP_PORT", "8000")))
-    cors_origins: List[str] = [
+def _parse_cors_origins() -> List[str]:
+    """Parse CORS origins from environment variable or provide development defaults."""
+    raw = os.getenv("CORS_ORIGINS")
+    if raw:
+        return [item.strip() for item in raw.split(",") if item.strip()]
+    return [
         "http://localhost:3000",
         "http://localhost:5173",
         "http://127.0.0.1:3000",
         "http://127.0.0.1:5173",
     ]
+
+
+class Settings(BaseModel):
+    """IBVAP platform configuration settings."""
+
+    title: str = Field(
+        default_factory=lambda: os.getenv(
+            "APP_TITLE", "IBVAP — Intelligent Border Video Analysis Platform"
+        )
+    )
+    description: str = Field(
+        default_factory=lambda: os.getenv(
+            "APP_DESCRIPTION",
+            "AI-powered intelligent border video analysis and surveillance platform.",
+        )
+    )
+    service_name: str = Field(
+        default_factory=lambda: os.getenv("SERVICE_NAME", "ibvap-backend")
+    )
+    app_name: str = Field(
+        default_factory=lambda: os.getenv(
+            "APP_NAME", "IBVAP — Intelligent Border Video Analysis Platform"
+        )
+    )
+    version: str = "0.1.0"
+    environment: str = Field(default_factory=lambda: os.getenv("ENVIRONMENT", "development"))
+    debug: bool = Field(default_factory=lambda: os.getenv("DEBUG", "true").lower() in ("true", "1", "yes"))
+    host: str = Field(default_factory=lambda: os.getenv("APP_HOST", "127.0.0.1"))
+    port: int = Field(default_factory=lambda: int(os.getenv("APP_PORT", "8000")))
+    cors_origins: List[str] = Field(default_factory=_parse_cors_origins)
 
     # Database Configuration (PostgreSQL)
     database_url: Optional[str] = Field(default_factory=lambda: os.getenv("DATABASE_URL"))
