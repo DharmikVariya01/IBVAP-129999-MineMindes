@@ -68,7 +68,12 @@ export const App: React.FC = () => {
           />
         );
       case 'alerts':
-        return <Alerts onViewTimeline={handleViewTimeline} />;
+        return (
+          <Alerts
+            onViewTimeline={handleViewTimeline}
+            onSelectCamera={handleSelectCameraFromMap}
+          />
+        );
       case 'map':
         return (
           <TacticalMap

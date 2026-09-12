@@ -16,9 +16,10 @@ import type { Camera } from '@/types/api';
 
 export interface AlertsProps {
   onViewTimeline?: (trackId: number | string) => void;
+  onSelectCamera?: (cameraId: string) => void;
 }
 
-export const Alerts: React.FC<AlertsProps> = ({ onViewTimeline }) => {
+export const Alerts: React.FC<AlertsProps> = ({ onViewTimeline, onSelectCamera }) => {
   const [selectedCameraId, setSelectedCameraId] = useState<string>('CAM_01');
   const [cameras, setCameras] = useState<Camera[]>([]);
   const [cameraMap, setCameraMap] = useState<Record<string, string>>({});
@@ -187,6 +188,7 @@ export const Alerts: React.FC<AlertsProps> = ({ onViewTimeline }) => {
         newAlertIds={newAlertIds}
         onAcknowledge={acknowledgeAlert}
         onViewTimeline={onViewTimeline}
+        onSelectCamera={onSelectCamera}
         onRefresh={refresh}
         onMarkRead={markAlertRead}
         cameraNameMap={cameraMap}

@@ -23,6 +23,7 @@ export interface AlertDetailProps {
   onClose: () => void;
   onAcknowledge?: (alertId: string) => void;
   onViewTimeline?: (trackId: number | string) => void;
+  onSelectCamera?: (cameraId: string) => void;
   isAcknowledging?: boolean;
   cameraName?: string;
 }
@@ -33,6 +34,7 @@ export const AlertDetail: React.FC<AlertDetailProps> = ({
   onClose,
   onAcknowledge,
   onViewTimeline,
+  onSelectCamera,
   isAcknowledging = false,
   cameraName,
 }) => {
@@ -127,9 +129,26 @@ export const AlertDetail: React.FC<AlertDetailProps> = ({
 
             <div className="grid grid-cols-2 gap-3">
               <div className="bg-surveillance-950/60 border border-surveillance-850 rounded p-3">
-                <div className="flex items-center gap-1.5 text-surveillance-400 mb-1">
-                  <Camera className="w-3 h-3 text-surveillance-500" />
-                  <span className="text-[10px] uppercase">Camera</span>
+                <div className="flex items-center justify-between text-surveillance-400 mb-1">
+                  <div className="flex items-center gap-1.5">
+                    <Camera className="w-3 h-3 text-surveillance-500" />
+                    <span className="text-[10px] uppercase">Camera</span>
+                  </div>
+                  {onSelectCamera && (
+                    <button
+                      type="button"
+                      onClick={() => {
+                        const targetCam = (alert.alert_metadata?.camera_code as string) || (alert.camera_id ? String(alert.camera_id) : 'CAM_01');
+                        onClose();
+                        onSelectCamera(targetCam);
+                      }}
+                      className="text-[10px] font-mono text-tactical-emerald hover:underline flex items-center gap-0.5 py-0.5 px-1.5 rounded bg-tactical-emerald/10 border border-tactical-emerald/30"
+                      data-testid="detail-view-camera-btn"
+                    >
+                      <Camera className="w-3 h-3 mr-0.5" />
+                      Live Feed
+                    </button>
+                  )}
                 </div>
                 <div className="text-surveillance-100 font-bold">{cameraDisplay}</div>
                 {alert.camera_id && (

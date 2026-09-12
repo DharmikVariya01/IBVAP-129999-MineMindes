@@ -16,6 +16,7 @@ export interface AlertPanelProps {
   newAlertIds?: Set<string>;
   onAcknowledge?: (alertId: string) => void;
   onViewTimeline?: (trackId: number | string) => void;
+  onSelectCamera?: (cameraId: string) => void;
   onRefresh?: () => void;
   onMarkRead?: (alertId: string) => void;
   cameraNameMap?: Record<string, string>;
@@ -37,6 +38,7 @@ export const AlertPanel: React.FC<AlertPanelProps> = ({
   newAlertIds = new Set(),
   onAcknowledge,
   onViewTimeline,
+  onSelectCamera,
   onRefresh,
   onMarkRead,
   cameraNameMap = {},
@@ -226,6 +228,7 @@ export const AlertPanel: React.FC<AlertPanelProps> = ({
                 onAcknowledge={onAcknowledge}
                 onSelect={handleSelectAlert}
                 onViewTimeline={onViewTimeline}
+                onSelectCamera={onSelectCamera}
                 cameraName={camName}
               />
             );
@@ -241,6 +244,7 @@ export const AlertPanel: React.FC<AlertPanelProps> = ({
           onClose={handleCloseDetail}
           onAcknowledge={onAcknowledge}
           onViewTimeline={onViewTimeline}
+          onSelectCamera={onSelectCamera}
           isAcknowledging={acknowledgingIds.has(selectedAlert.alert_id)}
           cameraName={
             cameraNameMap[selectedAlert.camera_id ?? ''] ||

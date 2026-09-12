@@ -13,6 +13,7 @@ export interface AlertCardProps {
   onAcknowledge?: (alertId: string) => void;
   onSelect?: (alert: Alert) => void;
   onViewTimeline?: (trackId: number | string) => void;
+  onSelectCamera?: (cameraId: string) => void;
   cameraName?: string;
 }
 
@@ -45,6 +46,7 @@ export const AlertCard: React.FC<AlertCardProps> = ({
   onAcknowledge,
   onSelect,
   onViewTimeline,
+  onSelectCamera,
   cameraName,
 }) => {
   const isUnacknowledged = alert.status === 'ACTIVE';
@@ -117,10 +119,27 @@ export const AlertCard: React.FC<AlertCardProps> = ({
       {/* Metadata Row: Camera, Track ID, Status, and Action */}
       <div className="flex flex-wrap items-center justify-between gap-3 pt-2 border-t border-surveillance-800/80 text-[11px] font-mono">
         <div className="flex items-center gap-3 text-surveillance-400">
-          <div className="flex items-center gap-1">
-            <Camera className="w-3 h-3 text-surveillance-500" aria-hidden="true" />
-            <span className="text-surveillance-300 font-semibold">{cameraDisplay}</span>
-          </div>
+          {onSelectCamera ? (
+            <button
+              type="button"
+              onClick={(e) => {
+                e.stopPropagation();
+                const targetCam = (alert.alert_metadata?.camera_code as string) || (alert.camera_id ? String(alert.camera_id) : 'CAM_01');
+                onSelectCamera(targetCam);
+              }}
+              className="flex items-center gap-1 hover:text-tactical-emerald underline decoration-tactical-emerald/40 hover:decoration-tactical-emerald transition-colors"
+              title={`Switch CCTV to ${cameraDisplay}`}
+              data-testid={`alert-camera-link-${alert.alert_id}`}
+            >
+              <Camera className="w-3 h-3 text-tactical-emerald" aria-hidden="true" />
+              <span className="text-surveillance-300 font-semibold">{cameraDisplay}</span>
+            </button>
+          ) : (
+            <div className="flex items-center gap-1">
+              <Camera className="w-3 h-3 text-surveillance-500" aria-hidden="true" />
+              <span className="text-surveillance-300 font-semibold">{cameraDisplay}</span>
+            </div>
+          )}
 
           {alert.track_id !== null && alert.track_id !== undefined && (
             onViewTimeline ? (
