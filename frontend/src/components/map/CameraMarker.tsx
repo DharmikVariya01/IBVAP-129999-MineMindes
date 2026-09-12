@@ -9,6 +9,7 @@ export interface CameraMarkerProps {
   coordinates: { lat: number; lng: number };
   activeAlerts?: Alert[];
   onSelectCamera?: (cameraId: string) => void;
+  onViewTimeline?: (trackId: number | string) => void;
 }
 
 /**
@@ -87,7 +88,7 @@ function createCameraIcon(camera: Camera, hasActiveAlert: boolean): L.DivIcon {
 }
 
 export const CameraMarker: React.FC<CameraMarkerProps> = React.memo(
-  ({ camera, coordinates, activeAlerts = [], onSelectCamera }) => {
+  ({ camera, coordinates, activeAlerts = [], onSelectCamera, onViewTimeline }) => {
     const hasActiveAlert = activeAlerts.length > 0;
 
     const icon = useMemo(
@@ -107,6 +108,7 @@ export const CameraMarker: React.FC<CameraMarkerProps> = React.memo(
             coordinates={coordinates}
             activeAlerts={activeAlerts}
             onSelectCamera={onSelectCamera}
+            onViewTimeline={onViewTimeline}
           />
         </Popup>
       </Marker>

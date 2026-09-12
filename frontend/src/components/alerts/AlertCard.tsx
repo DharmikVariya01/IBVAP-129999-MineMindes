@@ -12,6 +12,7 @@ export interface AlertCardProps {
   isAcknowledging?: boolean;
   onAcknowledge?: (alertId: string) => void;
   onSelect?: (alert: Alert) => void;
+  onViewTimeline?: (trackId: number | string) => void;
   cameraName?: string;
 }
 
@@ -43,6 +44,7 @@ export const AlertCard: React.FC<AlertCardProps> = ({
   isAcknowledging = false,
   onAcknowledge,
   onSelect,
+  onViewTimeline,
   cameraName,
 }) => {
   const isUnacknowledged = alert.status === 'ACTIVE';
@@ -121,10 +123,27 @@ export const AlertCard: React.FC<AlertCardProps> = ({
           </div>
 
           {alert.track_id !== null && alert.track_id !== undefined && (
-            <div className="flex items-center gap-1">
-              <Crosshair className="w-3 h-3 text-tactical-cyan" aria-hidden="true" />
-              <span>Track: #{alert.track_id}</span>
-            </div>
+            onViewTimeline ? (
+              <button
+                type="button"
+                onClick={(e) => {
+                  e.stopPropagation();
+                  onViewTimeline(alert.track_id!);
+                }}
+                className="flex items-center gap-1 hover:text-tactical-cyan underline decoration-tactical-cyan/40 hover:decoration-tactical-cyan transition-colors"
+                title={`Inspect track #${alert.track_id} timeline`}
+                aria-label={`Inspect event timeline for track ${alert.track_id}`}
+                data-testid={`alert-track-link-${alert.alert_id}`}
+              >
+                <Crosshair className="w-3 h-3 text-tactical-cyan" aria-hidden="true" />
+                <span>Track: #{alert.track_id}</span>
+              </button>
+            ) : (
+              <div className="flex items-center gap-1">
+                <Crosshair className="w-3 h-3 text-tactical-cyan" aria-hidden="true" />
+                <span>Track: #{alert.track_id}</span>
+              </div>
+            )
           )}
 
           <span className="text-surveillance-600">•</span>

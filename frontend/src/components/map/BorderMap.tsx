@@ -15,6 +15,7 @@ export interface BorderMapProps {
   alerts?: Alert[];
   cameraActivityMap?: Record<string, { activeTrackCount: number; lastActivityTimestamp?: string }>;
   onSelectCamera?: (cameraId: string) => void;
+  onViewTimeline?: (trackId: number | string) => void;
   onRefresh?: () => void;
   isRefreshing?: boolean;
   className?: string;
@@ -50,6 +51,7 @@ export const BorderMap: React.FC<BorderMapProps> = ({
   alerts = [],
   cameraActivityMap = {},
   onSelectCamera,
+  onViewTimeline,
   onRefresh,
   isRefreshing = false,
   className,
@@ -194,6 +196,7 @@ export const BorderMap: React.FC<BorderMapProps> = ({
                 coordinates={coords}
                 activeAlerts={camAlerts}
                 onSelectCamera={onSelectCamera}
+                onViewTimeline={onViewTimeline}
               />
             </React.Fragment>
           );

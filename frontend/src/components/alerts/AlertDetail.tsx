@@ -13,6 +13,7 @@ import {
   Calendar,
   Layers,
   Activity,
+  History,
 } from 'lucide-react';
 import type { Alert } from '@/types/api';
 
@@ -21,6 +22,7 @@ export interface AlertDetailProps {
   isOpen: boolean;
   onClose: () => void;
   onAcknowledge?: (alertId: string) => void;
+  onViewTimeline?: (trackId: number | string) => void;
   isAcknowledging?: boolean;
   cameraName?: string;
 }
@@ -30,6 +32,7 @@ export const AlertDetail: React.FC<AlertDetailProps> = ({
   isOpen,
   onClose,
   onAcknowledge,
+  onViewTimeline,
   isAcknowledging = false,
   cameraName,
 }) => {
@@ -139,8 +142,24 @@ export const AlertDetail: React.FC<AlertDetailProps> = ({
                   <Crosshair className="w-3 h-3 text-tactical-cyan" />
                   <span className="text-[10px] uppercase">Track Target</span>
                 </div>
-                <div className="text-surveillance-100 font-bold">
-                  {alert.track_id !== null && alert.track_id !== undefined ? `#${alert.track_id}` : 'None'}
+                <div className="flex items-center justify-between">
+                  <div className="text-surveillance-100 font-bold">
+                    {alert.track_id !== null && alert.track_id !== undefined ? `#${alert.track_id}` : 'None'}
+                  </div>
+                  {alert.track_id !== null && alert.track_id !== undefined && onViewTimeline && (
+                    <button
+                      type="button"
+                      onClick={() => {
+                        onClose();
+                        onViewTimeline(alert.track_id!);
+                      }}
+                      className="text-[10px] font-mono text-tactical-cyan hover:underline flex items-center gap-0.5 py-0.5 px-1.5 rounded bg-tactical-cyan/10 border border-tactical-cyan/30"
+                      data-testid="detail-view-timeline-btn"
+                    >
+                      <History className="w-3 h-3 mr-0.5" />
+                      Timeline
+                    </button>
+                  )}
                 </div>
                 {alert.event_id && (
                   <div className="text-[10px] text-surveillance-500 mt-0.5">Event: #{alert.event_id}</div>

@@ -74,7 +74,16 @@ export interface Track {
   alerts_count?: number | null;
 }
 
-export type EventType = 'FENCE_BREACH' | 'LOITERING';
+export type EventType =
+  | 'FENCE_BREACH'
+  | 'LOITERING'
+  | 'ZONE_ENTRY'
+  | 'ZONE_EXIT'
+  | 'MOTION'
+  | 'ZONE_CHANGE'
+  | 'MOVEMENT'
+  | 'TRACK_CREATED'
+  | (string & {});
 
 export interface Event {
   id: number;

@@ -1,5 +1,5 @@
 import React from 'react';
-import { Video, VideoOff, AlertTriangle, ExternalLink, MapPin } from 'lucide-react';
+import { Video, VideoOff, AlertTriangle, ExternalLink, MapPin, History } from 'lucide-react';
 import { cn } from '@/utils/cn';
 import type { Camera, Alert } from '@/types/api';
 
@@ -8,6 +8,7 @@ export interface CameraMarkerPopupProps {
   coordinates: { lat: number; lng: number } | null;
   activeAlerts?: Alert[];
   onSelectCamera?: (cameraId: string) => void;
+  onViewTimeline?: (trackId: number | string) => void;
 }
 
 export const CameraMarkerPopup: React.FC<CameraMarkerPopupProps> = ({
@@ -15,6 +16,7 @@ export const CameraMarkerPopup: React.FC<CameraMarkerPopupProps> = ({
   coordinates,
   activeAlerts = [],
   onSelectCamera,
+  onViewTimeline,
 }) => {
   const isOnline = camera.status === 'ONLINE';
   const hasActiveAlert = activeAlerts.length > 0;
@@ -114,6 +116,18 @@ export const CameraMarkerPopup: React.FC<CameraMarkerPopupProps> = ({
             <p className="text-[10px] text-rose-200 line-clamp-2">
               {latestAlert.message || `${latestAlert.alert_type} detected`}
             </p>
+          )}
+
+          {latestAlert?.track_id !== null && latestAlert?.track_id !== undefined && onViewTimeline && (
+            <button
+              type="button"
+              onClick={() => onViewTimeline(latestAlert.track_id!)}
+              className="mt-2 w-full flex items-center justify-center gap-1 py-1 px-2 rounded bg-tactical-rose/20 hover:bg-tactical-rose/30 text-rose-200 border border-tactical-rose/40 font-mono text-[10px] font-bold transition-colors"
+              data-testid="popup-view-timeline-btn"
+            >
+              <History className="w-3 h-3 mr-0.5" />
+              <span>Inspect Track #{latestAlert.track_id} Timeline</span>
+            </button>
           )}
         </div>
       )}

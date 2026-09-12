@@ -26,9 +26,10 @@ import type {
 
 export interface TacticalMapPageProps {
   onSelectCamera?: (cameraId: string) => void;
+  onViewTimeline?: (trackId: number | string) => void;
 }
 
-export const TacticalMap: React.FC<TacticalMapPageProps> = ({ onSelectCamera }) => {
+export const TacticalMap: React.FC<TacticalMapPageProps> = ({ onSelectCamera, onViewTimeline }) => {
   const [cameras, setCameras] = useState<Camera[]>([]);
   const [alerts, setAlerts] = useState<Alert[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
@@ -318,6 +319,7 @@ export const TacticalMap: React.FC<TacticalMapPageProps> = ({ onSelectCamera }) 
           alerts={alerts}
           cameraActivityMap={cameraActivityMap}
           onSelectCamera={onSelectCamera}
+          onViewTimeline={onViewTimeline}
           onRefresh={handleManualRefresh}
           isRefreshing={refreshing}
         />

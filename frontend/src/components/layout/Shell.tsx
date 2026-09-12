@@ -1,6 +1,6 @@
 import React from 'react';
 import { Header } from './Header';
-import { LayoutDashboard, Bell, Video, Map, BarChart3, Settings } from 'lucide-react';
+import { LayoutDashboard, Bell, Video, Map, History, BarChart3, Settings } from 'lucide-react';
 import { cn } from '@/utils/cn';
 
 export interface ShellProps {
@@ -19,6 +19,7 @@ export const Shell: React.FC<ShellProps> = ({
     { id: 'cctv', label: 'Live CCTV', icon: Video, badge: 'M19' },
     { id: 'alerts', label: 'Alert Center', icon: Bell, badge: 'M20' },
     { id: 'map', label: 'Tactical Map', icon: Map, badge: 'M21' },
+    { id: 'timeline', label: 'Timeline', icon: History, badge: 'M22' },
     { id: 'stats', label: 'Analytics', icon: BarChart3, badge: 'M23', disabled: true },
     { id: 'foundation', label: 'Overview', icon: LayoutDashboard, badge: 'M18' },
     { id: 'config', label: 'Settings', icon: Settings, badge: 'M18' },

@@ -144,11 +144,15 @@ export class ApiClient {
     return this.get<PaginatedResponse<Track>>('/tracks', params);
   }
 
-  public async getTrack(trackId: number): Promise<Track> {
+  public async getTrack(trackId: number | string): Promise<Track> {
     return this.get<Track>(`/tracks/${trackId}`);
   }
 
   // Events
+  public async getTrackEvents(trackId: number | string): Promise<Event[]> {
+    return this.get<Event[]>(`/events/${trackId}`);
+  }
+
   public async getEvents(
     params?: PaginationParams & { event_type?: string; camera_id?: number }
   ): Promise<PaginatedResponse<Event>> {
