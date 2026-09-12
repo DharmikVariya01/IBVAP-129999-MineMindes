@@ -17,6 +17,7 @@ from app.api.events import router as events_router
 from app.api.evidence import router as evidence_router
 from app.api.stats import router as stats_router
 from app.api.tracks import router as tracks_router
+from app.api.websocket import router as websocket_router
 
 api_router = APIRouter(prefix="/api/v1")
 
@@ -26,3 +27,5 @@ api_router.include_router(tracks_router)
 api_router.include_router(events_router)
 api_router.include_router(evidence_router)
 api_router.include_router(stats_router)
+api_router.include_router(websocket_router)
+
