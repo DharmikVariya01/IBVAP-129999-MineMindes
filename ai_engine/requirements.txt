@@ -1,0 +1,5 @@
+# IBVAP AI Engine Dependencies
+opencv-python>=4.8.0
+numpy>=1.24.0
+# Module 3: YOLOv8n Detection
+ultralytics>=8.2.0

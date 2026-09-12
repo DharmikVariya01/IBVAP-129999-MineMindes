@@ -1,0 +1,87 @@
+# ==============================================================================
+# IBVAP — Intelligent Border Video Analysis Platform
+# .gitignore
+# ==============================================================================
+
+# Virtual Environments
+.venv/
+venv/
+env/
+ENV/
+
+# Python Bytecode, Caches & Linters
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+.mypy_cache/
+.ruff_cache/
+
+# Testing & Coverage
+.pytest_cache/
+.coverage
+.coverage.*
+htmlcov/
+*.cover
+
+# Environment Variables & Secrets
+.env
+.env.*
+!.env.example
+backend/.env
+backend/.env.*
+!backend/.env.example
+
+# Media, Evidence & Storage (Preserve directory structure via .gitkeep)
+evidence/*
+!evidence/.gitkeep
+videos/*
+!videos/.gitkeep
+
+# AI Model Weights & Checkpoints
+*.pt
+
+
+# Frontend & Node
+frontend/node_modules/
+frontend/dist/
+frontend/.vite/
+frontend/.next/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+.pnpm-debug.log*
+
+# Logs
+*.log
+logs/
+
+# Temporary Files & Build Artifacts
+*.tmp
+*.temp
+*~
+build/
+develop-eggs/
+dist/
+downloads/
+eggs/
+.eggs/
+lib/
+lib64/
+parts/
+sdist/
+wheels/
+*.egg-info/
+.installed.cfg
+*.egg
+
+# IDE & Editor Metadata
+.vscode/
+.idea/
+*.swp
+*.swo
+*.sublime-workspace
+*.sublime-project
+.DS_Store
+Thumbs.db
