@@ -1,24 +1,50 @@
-import React, { useState, useMemo } from 'react';
+import React, { useState, useEffect, useMemo } from 'react';
 import { useCameraStream } from '@/hooks/useCameraStream';
+import { useCameraPrioritization } from '@/hooks/useCameraPrioritization';
 import { CameraSelector } from '@/components/cctv/CameraSelector';
 import { LiveVideo } from '@/components/cctv/LiveVideo';
 import { ConnectionStatus } from '@/components/cctv/ConnectionStatus';
 import { CameraStatus } from '@/components/cctv/CameraStatus';
 import { LiveStats } from '@/components/cctv/LiveStats';
+import { CameraPriorityList } from '@/components/prioritization/CameraPriorityList';
 import { Video, ShieldCheck, Crosshair, History } from 'lucide-react';
 
 export interface CCTVMonitoringProps {
   initialCameraId?: string | null;
   onViewTimeline?: (trackId: number | string) => void;
+  onNavigateToAlerts?: (alertId?: string) => void;
+  onNavigateToMap?: (cameraId?: string) => void;
 }
 
 export const CCTVMonitoring: React.FC<CCTVMonitoringProps> = ({
   initialCameraId = null,
   onViewTimeline,
+  onNavigateToAlerts,
+  onNavigateToMap,
 }) => {
   const [selectedCameraId, setSelectedCameraId] = useState<string | null>(initialCameraId);
 
-  // Stream management for the selected camera feed
+  // Sync initialCameraId when changed externally
+  useEffect(() => {
+    if (initialCameraId) {
+      setSelectedCameraId(initialCameraId);
+    }
+  }, [initialCameraId]);
+
+  // M24 Tactical Camera Prioritization Engine
+  const {
+    prioritizedCameras,
+    summaryCounts,
+    loading: priorityLoading,
+    error: priorityError,
+    sortByPriority,
+    setSortByPriority,
+    refresh: refreshPriorities,
+    handleIncomingAlert,
+    handleCameraStatus: handlePriorityCameraStatus,
+  } = useCameraPrioritization();
+
+  // Stream management for the selected camera feed (piggybacks on existing socket for alert ingestion)
   const {
     connectionState,
     cameraStatus,
@@ -27,7 +53,15 @@ export const CCTVMonitoring: React.FC<CCTVMonitoringProps> = ({
     latestFrame,
     error,
     frameCount,
-  } = useCameraStream(selectedCameraId, { autoConnect: true });
+  } = useCameraStream(selectedCameraId, {
+    autoConnect: true,
+    onAlert: (alertData, camId) => {
+      handleIncomingAlert(alertData, camId);
+    },
+    onCameraStatus: (status, _details, camId) => {
+      handlePriorityCameraStatus(status, camId);
+    },
+  });
 
   const handleSelectCamera = (cameraId: string) => {
     setSelectedCameraId(cameraId);
@@ -77,6 +111,9 @@ export const CCTVMonitoring: React.FC<CCTVMonitoringProps> = ({
           <CameraSelector
             selectedCameraId={selectedCameraId}
             onSelectCamera={handleSelectCamera}
+            prioritizedCameras={prioritizedCameras}
+            sortByPriority={sortByPriority}
+            onToggleSortByPriority={() => setSortByPriority((prev) => !prev)}
           />
           {selectedCameraId && (
             <>
@@ -87,7 +124,22 @@ export const CCTVMonitoring: React.FC<CCTVMonitoringProps> = ({
         </div>
       </div>
 
-      {/* 2. Main Live CCTV Viewport */}
+      {/* 2. M24 Tactical Camera Prioritization Panel */}
+      <CameraPriorityList
+        prioritizedCameras={prioritizedCameras}
+        summaryCounts={summaryCounts}
+        selectedCameraId={selectedCameraId}
+        loading={priorityLoading}
+        error={priorityError}
+        sortByPriority={sortByPriority}
+        onToggleSortByPriority={() => setSortByPriority((prev) => !prev)}
+        onSelectCamera={handleSelectCamera}
+        onRefresh={refreshPriorities}
+        onNavigateToAlerts={onNavigateToAlerts}
+        onNavigateToMap={onNavigateToMap}
+      />
+
+      {/* 3. Main Live CCTV Viewport */}
       <div className="w-full">
         <LiveVideo
           frame={latestFrame}
@@ -98,7 +150,7 @@ export const CCTVMonitoring: React.FC<CCTVMonitoringProps> = ({
         />
       </div>
 
-      {/* 2b. Active Tracks Inspection Bar (M22 Timeline Integration) */}
+      {/* 3b. Active Tracks Inspection Bar (M22 Timeline Integration) */}
       {activeTracksList.length > 0 && onViewTimeline && (
         <div
           className="flex items-center gap-2 p-2.5 bg-surveillance-900/90 border border-surveillance-800 rounded-lg text-xs font-mono overflow-x-auto scrollbar-none"
@@ -125,10 +177,10 @@ export const CCTVMonitoring: React.FC<CCTVMonitoringProps> = ({
         </div>
       )}
 
-      {/* 3. Live Telemetry & Stats Bar */}
+      {/* 4. Live Telemetry & Stats Bar */}
       <LiveStats stats={stats} frameCount={frameCount} />
 
-      {/* 4. Operational Surveillance Advisory */}
+      {/* 5. Operational Surveillance Advisory */}
       <div className="flex items-center justify-between px-3 py-2 bg-surveillance-950/40 border border-surveillance-850 rounded text-[11px] font-mono text-surveillance-500">
         <div className="flex items-center gap-2">
           <ShieldCheck className="w-3.5 h-3.5 text-tactical-emerald" />

@@ -6,11 +6,18 @@ import { Button } from '@/components/common/Button';
 import { Camera as CameraIcon, RefreshCw, AlertCircle } from 'lucide-react';
 import { cn } from '@/utils/cn';
 
+import type { PrioritizedCamera } from '@/types/prioritization';
+import { CameraPriorityBadge } from '@/components/prioritization/CameraPriorityBadge';
+import { ArrowUpDown } from 'lucide-react';
+
 export interface CameraSelectorProps {
   selectedCameraId: string | null;
   onSelectCamera: (cameraId: string) => void;
   disabled?: boolean;
   className?: string;
+  prioritizedCameras?: PrioritizedCamera[];
+  sortByPriority?: boolean;
+  onToggleSortByPriority?: () => void;
 }
 
 export const CameraSelector: React.FC<CameraSelectorProps> = ({
@@ -18,9 +25,12 @@ export const CameraSelector: React.FC<CameraSelectorProps> = ({
   onSelectCamera,
   disabled = false,
   className,
+  prioritizedCameras,
+  sortByPriority = false,
+  onToggleSortByPriority,
 }) => {
   const [cameras, setCameras] = useState<Camera[]>([]);
-  const [loading, setLoading] = useState<boolean>(true);
+  const [loading, setLoading] = useState<boolean>(!prioritizedCameras);
   const [error, setError] = useState<string | null>(null);
 
   const fetchCameras = async () => {
@@ -38,8 +48,13 @@ export const CameraSelector: React.FC<CameraSelectorProps> = ({
   };
 
   useEffect(() => {
-    fetchCameras();
-  }, []);
+    if (prioritizedCameras) {
+      setCameras(prioritizedCameras.map((p) => p.camera));
+      setLoading(false);
+    } else {
+      fetchCameras();
+    }
+  }, [prioritizedCameras]);
 
   const getStatusVariant = (status: string): NonNullable<BadgeProps['variant']> => {
     switch (status.toUpperCase()) {
@@ -110,11 +125,19 @@ export const CameraSelector: React.FC<CameraSelectorProps> = ({
               <option value="" disabled>
                 -- Select Camera Feed --
               </option>
-              {cameras.map((cam) => (
-                <option key={cam.camera_id} value={cam.camera_id}>
-                  {cam.name} ({cam.camera_id}) — [{cam.status}]
-                </option>
-              ))}
+              {prioritizedCameras && sortByPriority
+                ? prioritizedCameras.map((item) => (
+                    <option key={item.camera.camera_id} value={item.camera.camera_id}>
+                      #{item.rank} [{item.priorityLevel}
+                      {item.activeAlertCount > 0 ? ` (${item.activeAlertCount})` : ''}]{' '}
+                      {item.camera.name} ({item.camera.camera_id}) — [{item.camera.status}]
+                    </option>
+                  ))
+                : cameras.map((cam) => (
+                    <option key={cam.camera_id} value={cam.camera_id}>
+                      {cam.name} ({cam.camera_id}) — [{cam.status}]
+                    </option>
+                  ))}
             </select>
             <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center px-2 text-surveillance-400">
               <svg className="w-3.5 h-3.5 fill-current" viewBox="0 0 20 20">
@@ -126,12 +149,33 @@ export const CameraSelector: React.FC<CameraSelectorProps> = ({
           {selectedCameraId && (() => {
             const current = cameras.find((c) => c.camera_id === selectedCameraId);
             if (!current) return null;
+            const prioItem = prioritizedCameras?.find((p) => p.camera.camera_id === selectedCameraId);
             return (
-              <Badge variant={getStatusVariant(current.status)} size="sm">
-                {current.status}
-              </Badge>
+              <div className="flex items-center gap-1.5">
+                {prioItem && <CameraPriorityBadge level={prioItem.priorityLevel} size="sm" />}
+                <Badge variant={getStatusVariant(current.status)} size="sm">
+                  {current.status}
+                </Badge>
+              </div>
             );
           })()}
+
+          {onToggleSortByPriority && (
+            <Button
+              size="sm"
+              variant="ghost"
+              onClick={onToggleSortByPriority}
+              title={sortByPriority ? 'Sorting by priority' : 'Sorting by camera ID'}
+              aria-label={`Toggle camera sort order. Currently ${sortByPriority ? 'Priority' : 'Normal'}`}
+              className={cn(
+                'h-8 px-2 text-xs font-mono',
+                sortByPriority ? 'text-tactical-cyan' : 'text-surveillance-400 hover:text-surveillance-200'
+              )}
+              data-testid="cctv-sort-toggle-btn"
+            >
+              <ArrowUpDown className="w-3.5 h-3.5" />
+            </Button>
+          )}
 
           <Button
             size="sm"

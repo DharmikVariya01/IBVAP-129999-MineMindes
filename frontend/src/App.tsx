@@ -38,6 +38,14 @@ export const App: React.FC = () => {
     setActiveNav('cctv');
   };
 
+  const handleNavigateToAlerts = (_alertId?: string) => {
+    setActiveNav('alerts');
+  };
+
+  const handleNavigateToMap = (_cameraId?: string) => {
+    setActiveNav('map');
+  };
+
   const handleViewTimeline = (trackId: number | string) => {
     setPreviousNav(activeNav);
     setTargetTrackId(trackId);
@@ -55,6 +63,8 @@ export const App: React.FC = () => {
           <CCTVMonitoring
             initialCameraId={targetCameraId}
             onViewTimeline={handleViewTimeline}
+            onNavigateToAlerts={handleNavigateToAlerts}
+            onNavigateToMap={handleNavigateToMap}
           />
         );
       case 'alerts':

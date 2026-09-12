@@ -9,6 +9,7 @@
 import { useCallback, useEffect, useRef, useState } from 'react';
 import { WebSocketClient } from '@/services/websocket/client';
 import type {
+  AlertData,
   CameraStreamStatus,
   ConnectionState,
   FrameData,
@@ -17,6 +18,12 @@ import type {
 } from '@/types/websocket';
 
 export type FrameListener = (frame: FrameData) => void;
+
+export interface UseCameraStreamOptions {
+  autoConnect?: boolean;
+  onAlert?: (alert: AlertData, cameraId?: string) => void;
+  onCameraStatus?: (status: CameraStreamStatus, details?: string | null, cameraId?: string) => void;
+}
 
 export interface UseCameraStreamReturn {
   connectionState: ConnectionState;
@@ -33,9 +40,13 @@ export interface UseCameraStreamReturn {
 
 export function useCameraStream(
   cameraId?: string | null,
-  options?: { autoConnect?: boolean }
+  options?: UseCameraStreamOptions
 ): UseCameraStreamReturn {
   const autoConnect = options?.autoConnect ?? true;
+  const onAlertRef = useRef(options?.onAlert);
+  onAlertRef.current = options?.onAlert;
+  const onCameraStatusRef = useRef(options?.onCameraStatus);
+  onCameraStatusRef.current = options?.onCameraStatus;
   const clientRef = useRef<WebSocketClient | null>(null);
 
   if (!clientRef.current) {
@@ -147,6 +158,19 @@ export function useCameraStream(
             if (statusPayload && statusPayload.status) {
               setCameraStatus(statusPayload.status);
               setCameraStatusDetails(statusPayload.details || null);
+              onCameraStatusRef.current?.(
+                statusPayload.status,
+                statusPayload.details || null,
+                msg.camera_id || cameraId || undefined
+              );
+            }
+            break;
+          }
+
+          case 'alert': {
+            const alertPayload = msg.data as AlertData;
+            if (alertPayload) {
+              onAlertRef.current?.(alertPayload, msg.camera_id || cameraId || undefined);
             }
             break;
           }
