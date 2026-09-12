@@ -17,7 +17,7 @@ export const Shell: React.FC<ShellProps> = ({
   // Lightweight navigation placeholders for future modules M19–M24
   const navItems = [
     { id: 'cctv', label: 'Live CCTV', icon: Video, badge: 'M19' },
-    { id: 'alerts', label: 'Alert Center', icon: Bell, badge: 'M20', disabled: true },
+    { id: 'alerts', label: 'Alert Center', icon: Bell, badge: 'M20' },
     { id: 'map', label: 'Tactical Map', icon: Map, badge: 'M21', disabled: true },
     { id: 'stats', label: 'Analytics', icon: BarChart3, badge: 'M23', disabled: true },
     { id: 'foundation', label: 'Overview', icon: LayoutDashboard, badge: 'M18' },

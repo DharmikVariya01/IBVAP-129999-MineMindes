@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { Shell } from '@/components/layout/Shell';
 import { CCTVMonitoring } from '@/pages/CCTVMonitoring';
+import { Alerts } from '@/pages/Alerts';
 import { FoundationOverview } from '@/pages/FoundationOverview';
 
 export const App: React.FC = () => {
@@ -10,6 +11,8 @@ export const App: React.FC = () => {
     switch (activeNav) {
       case 'cctv':
         return <CCTVMonitoring />;
+      case 'alerts':
+        return <Alerts />;
       case 'foundation':
         return <FoundationOverview />;
       default:
