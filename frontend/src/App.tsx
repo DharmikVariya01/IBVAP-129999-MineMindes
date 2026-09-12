@@ -5,6 +5,7 @@ import { Alerts } from '@/pages/Alerts';
 import { FoundationOverview } from '@/pages/FoundationOverview';
 import { TacticalMap } from '@/pages/TacticalMap';
 import { EventTimelinePage } from '@/pages/EventTimelinePage';
+import { Analytics } from '@/pages/Analytics';
 
 export const App: React.FC = () => {
   const [activeNav, setActiveNav] = useState<string>('cctv');
@@ -12,7 +13,7 @@ export const App: React.FC = () => {
   const [targetCameraId, setTargetCameraId] = useState<string | null>(null);
   const [targetTrackId, setTargetTrackId] = useState<number | string | null>(null);
 
-  // Sync hash routing if directly accessed (e.g. #/timeline/10 or #timeline)
+  // Sync hash routing if directly accessed (e.g. #/timeline/10, #timeline, #stats)
   useEffect(() => {
     const handleHashChange = () => {
       const hash = window.location.hash;
@@ -22,6 +23,8 @@ export const App: React.FC = () => {
           setTargetTrackId(match[1]);
         }
         setActiveNav('timeline');
+      } else if (hash.includes('stats') || hash.includes('analytics')) {
+        setActiveNav('stats');
       }
     };
 
@@ -68,6 +71,16 @@ export const App: React.FC = () => {
           <EventTimelinePage
             initialTrackId={targetTrackId}
             onBack={handleBackFromTimeline}
+          />
+        );
+      case 'stats':
+      case 'analytics':
+        return (
+          <Analytics
+            onNavigateToAlerts={() => setActiveNav('alerts')}
+            onNavigateToMap={() => setActiveNav('map')}
+            onNavigateToCCTV={() => setActiveNav('cctv')}
+            onNavigateToTimeline={() => setActiveNav('timeline')}
           />
         );
       case 'foundation':

@@ -9,18 +9,26 @@ export interface ShellProps {
   onNavChange?: (nav: string) => void;
 }
 
+interface NavItem {
+  id: string;
+  label: string;
+  icon: React.ComponentType<{ className?: string; 'aria-hidden'?: boolean | 'true' | 'false' }>;
+  badge?: string;
+  disabled?: boolean;
+}
+
 export const Shell: React.FC<ShellProps> = ({
   children,
   activeNav = 'foundation',
   onNavChange,
 }) => {
   // Lightweight navigation placeholders for future modules M19–M24
-  const navItems = [
+  const navItems: NavItem[] = [
     { id: 'cctv', label: 'Live CCTV', icon: Video, badge: 'M19' },
     { id: 'alerts', label: 'Alert Center', icon: Bell, badge: 'M20' },
     { id: 'map', label: 'Tactical Map', icon: Map, badge: 'M21' },
     { id: 'timeline', label: 'Timeline', icon: History, badge: 'M22' },
-    { id: 'stats', label: 'Analytics', icon: BarChart3, badge: 'M23', disabled: true },
+    { id: 'stats', label: 'Analytics', icon: BarChart3, badge: 'M23' },
     { id: 'foundation', label: 'Overview', icon: LayoutDashboard, badge: 'M18' },
     { id: 'config', label: 'Settings', icon: Settings, badge: 'M18' },
   ];
