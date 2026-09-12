@@ -7,8 +7,12 @@ import { CameraStatus } from '@/components/cctv/CameraStatus';
 import { LiveStats } from '@/components/cctv/LiveStats';
 import { Video, ShieldCheck } from 'lucide-react';
 
-export const CCTVMonitoring: React.FC = () => {
-  const [selectedCameraId, setSelectedCameraId] = useState<string | null>(null);
+export interface CCTVMonitoringProps {
+  initialCameraId?: string | null;
+}
+
+export const CCTVMonitoring: React.FC<CCTVMonitoringProps> = ({ initialCameraId = null }) => {
+  const [selectedCameraId, setSelectedCameraId] = useState<string | null>(initialCameraId);
 
   // Stream management for the selected camera feed
   const {

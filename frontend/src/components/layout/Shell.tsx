@@ -18,7 +18,7 @@ export const Shell: React.FC<ShellProps> = ({
   const navItems = [
     { id: 'cctv', label: 'Live CCTV', icon: Video, badge: 'M19' },
     { id: 'alerts', label: 'Alert Center', icon: Bell, badge: 'M20' },
-    { id: 'map', label: 'Tactical Map', icon: Map, badge: 'M21', disabled: true },
+    { id: 'map', label: 'Tactical Map', icon: Map, badge: 'M21' },
     { id: 'stats', label: 'Analytics', icon: BarChart3, badge: 'M23', disabled: true },
     { id: 'foundation', label: 'Overview', icon: LayoutDashboard, badge: 'M18' },
     { id: 'config', label: 'Settings', icon: Settings, badge: 'M18' },
