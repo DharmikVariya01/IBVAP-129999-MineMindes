@@ -3,6 +3,25 @@
 A software-only AI layer designed to upgrade existing border surveillance CCTV streams into automated, real-time intrusion and behavioral analysis feeds.
 
 ---
+## 📸 Dashboard Screenshots
+
+### Main Dashboard
+
+<p align="center">
+  <img src="docs/images/MainDash.jpeg" width="900">
+</p>
+
+### Camera Locations
+
+<p align="center">
+  <img src="docs/images/CamLocation.jpeg" width="900">
+</p>
+
+### Zone Monitoring
+
+<p align="center">
+  <img src="docs/images/Zone.jpeg" width="900">
+</p>
 
 ## 🏗️ Architecture Overview
 
